@@ -1,28 +1,41 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gargoura Digital Bank</title>
-  <link rel="stylesheet" href="style.css">
-  <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gargoura Digital Bank</title>
+    <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+    <style>
+        body { background: linear-gradient(to bottom, #4F46E5, #F97316); 
+               color: white; text-align: center; font-family: Arial; padding: 50px; }
+        .card { background: rgba(0,0,0,0.3); padding: 30px; border-radius: 20px; max-width: 400px; margin: auto; }
+        button { background: #10B981; color: white; border: none; padding: 15px 30px; 
+                 border-radius: 10px; font-size: 16px; cursor: pointer; }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <img src="IMG-20260908-WA0019.jpg">
-    <h1>Gargoura Digital Bank</h1>
-    <p>La banque digitale des pionniers Pi</p>
-    
-    <div id="auth-section">
-      <button id="login-btn">Se connecter avec Pi</button>
-    </div> </body> </html>html>
-    
-    <div id="user-section" style="display:none;">
-      <h2>Bienvenue <span id="username"></span></h2>
-      <p>Solde: <span id="balance">0.00</span> π</p>
-      <button id="logout-btn">Déconnexion</button>
+    <div class="card">
+        <img src="https://via.placeholder.com/100" alt="Logo GDB" style="border-radius:50%;">
+        <h1>Gargoura Digital Bank</h1>
+        <p>La banque digitale des pionniers Pi</p>
+        <button onclick="login()">Se connecter avec Pi</button>
     </div>
-  </div>
-  <script src="app.js"></script>
+
+    <script>
+      pi.init({ version: "2.0" })
+      
+      function login() {
+        const scopes = ['username', 'payments'];
+        pi.authenticate(scopes, onIncompletePaymentFound, function(auth) {
+          alert("Connecté ! Bonjour " + auth.user.username)
+        }).catch(function(error) {
+          console.error(error);
+        });
+      }
+      
+      function onIncompletePaymentFound(payment) {
+        console.log("Paiement incomplet trouvé", payment);
+      }
+    </script>
 </body>
 </html>
