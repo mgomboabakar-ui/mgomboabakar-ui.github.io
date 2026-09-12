@@ -7,23 +7,42 @@
   <style>
     body { font-family: Arial; text-align: center; padding: 50px; background: #6f42c1; color: white; }
     button { padding: 15px 30px; font-size: 18px; background: white; color: #6f42c1; border: none; border-radius: 10px; cursor: pointer; }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
   </style>
 </head>
 <body>
   <h1>Gargoura Digital Bank V2</h1>
   <p>Bienvenue sur votre banque digitale</p>
-  <button id="auth">Se connecter avec Pi</button>
+  <button id="auth" disabled>Chargement...</button>
   <p id="result"></p>
 
   <script>
-    Pi.init({ version: "2.0", sandbox: false });
-    
-    document.getElementById('auth').onclick = function() {
-      Pi.authenticate(['username', 'payments'], function(auth) {
-        document.getElementById('result').innerText = "Connecté : " + auth.user.username;
-      }, function(error) {
-        document.getElementById('result').innerText = "Erreur : " + error;
-      });
+    window.onload = function() {
+      // 1. Initialiser Pi SANS sandbox pour Mainnet
+      Pi.init({ version: "2.0" });
+      
+      const btn = document.getElementById('auth');
+      btn.innerText = "Se connecter avec Pi";
+      btn.disabled = false;
+
+      // 2. Quand on clique
+      btn.onclick = function() {
+        btn.disabled = true;
+        btn.innerText = "Connexion...";
+        
+        Pi.authenticate(
+          ['username', 'payments'], 
+          function onReady(auth) {
+            document.getElementById('result').innerText = "Connecté : " + auth.user.username;
+            btn.innerText = "Connecté";
+          }, 
+          function onError(error) {
+            document.getElementById('result').innerText = "Erreur : " + error;
+            btn.disabled = false;
+            btn.innerText = "Réessayer";
+          }
+        );
+      }
     }
   </script>
 </body>
